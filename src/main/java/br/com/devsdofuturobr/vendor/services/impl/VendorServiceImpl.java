@@ -2,6 +2,7 @@ package br.com.devsdofuturobr.vendor.services.impl;
 
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
+import br.com.devsdofuturobr.vendor.dto.response.VendorShortProjectionResponse;
 import br.com.devsdofuturobr.vendor.dto.response.VendorShortResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
 import br.com.devsdofuturobr.vendor.exception.VendorNotFoundException;
@@ -48,7 +49,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public Page<VendorShortResponse> findAllShortResponse(Pageable pageable) {
+    public Page<VendorShortProjectionResponse> findAllShortResponse(Pageable pageable) {
         return repository.findAllShortResponse(pageable);
     }
 }

@@ -7,7 +7,6 @@ import br.com.devsdofuturobr.vendor.entities.Vendor;
 import br.com.devsdofuturobr.vendor.services.VendorService;
 import br.com.devsdofuturobr.vendor.util.VendorParse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,10 +41,10 @@ public class VendorController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     Page<?> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                     @RequestParam(value = "size", defaultValue = "5") Integer size,
-                                     @RequestParam(value = "sort", defaultValue = "name") String sort,
-                                     @RequestParam(value = "direction", defaultValue = "desc") String direction,
-                                    @RequestParam(value = "allFields", defaultValue = "true") Boolean allFields) {
+                    @RequestParam(value = "size", defaultValue = "5") Integer size,
+                    @RequestParam(value = "sort", defaultValue = "name") String sort,
+                    @RequestParam(value = "direction", defaultValue = "desc") String direction,
+                    @RequestParam(value = "allFields", defaultValue = "true") Boolean allFields) {
         filterIssuesInParameters(page, size);
 
         if (!isValidSortField(sort)) {
@@ -54,7 +53,7 @@ public class VendorController {
 
         Sort.Direction setDirection = Sort.Direction.fromOptionalString(direction).orElse(Sort.Direction.DESC);
         Pageable pageable = PageRequest.of(page, size, Sort.by(setDirection, sort));
-        if(allFields.equals(false)){
+        if (allFields.equals(false)) {
             return service.findAllShortResponse(pageable);
         }
         return VendorParse.toPage(service.findAll(pageable));
@@ -72,8 +71,8 @@ public class VendorController {
         service.delete(id);
     }
 
-    private void filterIssuesInParameters(Integer page, Integer size){
-        if(page < 0){
+    private void filterIssuesInParameters(Integer page, Integer size) {
+        if (page < 0) {
             throw new IllegalArgumentException("The page parameter cannot be less than zero.");
         }
         if (size <= 0) {

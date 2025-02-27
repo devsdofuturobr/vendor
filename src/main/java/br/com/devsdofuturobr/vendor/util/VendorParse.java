@@ -3,6 +3,7 @@ package br.com.devsdofuturobr.vendor.util;
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
 import br.com.devsdofuturobr.vendor.dto.response.VendorFullResponse;
+import br.com.devsdofuturobr.vendor.dto.response.VendorShortResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
 import org.springframework.data.domain.Page;
 
@@ -42,6 +43,13 @@ public class VendorParse {
         vendor.setZip(Optional.ofNullable(request.zip()).orElse(vendor.getZip()));
         vendor.setCountry(Optional.ofNullable(request.country()).orElse(vendor.getCountry()));
         return vendor;
+    }
+
+    public static VendorShortResponse toShortDTO(Vendor vendor){
+        return new VendorShortResponse(
+                vendor.getId(),
+                vendor.getName()
+        );
     }
 
     public static Page<VendorFullResponse> toPage(Page<Vendor> all) {
