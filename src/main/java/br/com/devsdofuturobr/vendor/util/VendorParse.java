@@ -1,8 +1,13 @@
 package br.com.devsdofuturobr.vendor.util;
 
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
+import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
 import br.com.devsdofuturobr.vendor.dto.response.VendorFullResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
+import org.springframework.data.domain.Page;
+
+import java.util.Objects;
+import java.util.Optional;
 
 public class VendorParse {
 
@@ -27,5 +32,19 @@ public class VendorParse {
                 .zip(request.zip())
                 .country(request.country())
                 .build();
+    }
+
+    public static Vendor updateByDTO(Vendor vendor, VendorUpdateRequest request) {
+        vendor.setName(Optional.ofNullable(request.name()).orElse(vendor.getName()));
+        vendor.setAddress(Optional.ofNullable(request.address()).orElse(vendor.getAddress()));
+        vendor.setCity(Optional.ofNullable(request.city()).orElse(vendor.getCity()));
+        vendor.setState(Optional.ofNullable(request.state()).orElse(vendor.getState()));
+        vendor.setZip(Optional.ofNullable(request.zip()).orElse(vendor.getZip()));
+        vendor.setCountry(Optional.ofNullable(request.country()).orElse(vendor.getCountry()));
+        return vendor;
+    }
+
+    public static Page<VendorFullResponse> toPage(Page<Vendor> all) {
+        return all.map(VendorParse::toDTO);
     }
 }
