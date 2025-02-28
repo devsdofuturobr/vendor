@@ -3,7 +3,6 @@ package br.com.devsdofuturobr.vendor.services;
 import br.com.devsdofuturobr.vendor.dto.request.ProductCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.ProductUpdateRequest;
 import br.com.devsdofuturobr.vendor.dto.response.ProductProjectionResponse;
-import br.com.devsdofuturobr.vendor.dto.response.ProductResponse;
 import br.com.devsdofuturobr.vendor.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

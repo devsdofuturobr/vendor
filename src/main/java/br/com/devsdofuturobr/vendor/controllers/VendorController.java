@@ -4,21 +4,16 @@ import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorFilter;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
 import br.com.devsdofuturobr.vendor.dto.response.VendorFullResponse;
-import br.com.devsdofuturobr.vendor.entities.Vendor;
 import br.com.devsdofuturobr.vendor.services.VendorService;
 import br.com.devsdofuturobr.vendor.util.VendorParse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Objects;
 
 @RequiredArgsConstructor

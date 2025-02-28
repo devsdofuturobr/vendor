@@ -27,7 +27,9 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public Vendor update(VendorUpdateRequest request) {
-        return repository.save(VendorParse.updateByDTO(this.findById(request.id()), request));
+        Vendor vendor = this.findById(request.id());
+        Vendor toUpdate = VendorParse.updateByDTO(vendor, request);
+        return repository.save(toUpdate);
     }
 
     @Override
