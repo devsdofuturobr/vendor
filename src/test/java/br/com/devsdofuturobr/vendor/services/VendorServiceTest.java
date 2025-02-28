@@ -138,16 +138,18 @@ public class VendorServiceTest {
     void testFindAll() {
         Pageable pageable = PageRequest.of(0, 10);
         List<Vendor> vendors = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 15; i++){
             vendors.add(VendorBuilder.toBuild());
         }
-        Page<Vendor> page = new PageImpl<>(vendors);
+        Page<Vendor> page = new PageImpl<>(vendors, pageable, vendors.size());
         when(repository.findAll(pageable)).thenReturn(page);
 
         Page<Vendor> result = vendorService.findAll(pageable);
 
         assertNotNull(result);
-        assertEquals(10, result.getTotalElements());
+        assertEquals(10, result.getSize());
+        assertEquals(15, result.getTotalElements());
+        assertEquals(2, result.getTotalPages());
         verify(repository, times(1)).findAll(pageable);
     }
 
