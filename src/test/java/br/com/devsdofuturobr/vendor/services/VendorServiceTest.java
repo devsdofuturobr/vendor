@@ -4,16 +4,13 @@ import br.com.devsdofuturobr.vendor.builder.VendorBuilder;
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
 import br.com.devsdofuturobr.vendor.dto.response.VendorShortProjectionResponse;
-import br.com.devsdofuturobr.vendor.dto.response.VendorShortResponse;
-import br.com.devsdofuturobr.vendor.entities.Product;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
-import br.com.devsdofuturobr.vendor.exception.ProductNotFoundException;
 import br.com.devsdofuturobr.vendor.exception.VendorNotFoundException;
 import br.com.devsdofuturobr.vendor.repositories.VendorRepository;
 import br.com.devsdofuturobr.vendor.services.impl.VendorServiceImpl;
-import br.com.devsdofuturobr.vendor.util.VendorParse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,11 +47,15 @@ public class VendorServiceTest {
         Vendor vendorCreated = VendorBuilder.toBuild();
         vendorCreated.setId(1L);
 
+        ArgumentCaptor<Vendor> vendorCaptor = ArgumentCaptor.forClass(Vendor.class);
+
         when(repository.save(any(Vendor.class))).thenReturn(vendorCreated);
+
 
         Vendor result = vendorService.create(request);
 
         assertNotNull(result);
+        assertEquals(1L, result.getId());
         assertEquals("Vendor Name", result.getName());
         assertEquals("Address", result.getAddress());
         assertEquals("City", result.getCity());
@@ -62,7 +63,20 @@ public class VendorServiceTest {
         assertEquals("Zip", result.getZip());
         assertEquals("Country", result.getCountry());
 
-        verify(repository, times(1)).save(any(Vendor.class));
+        //verify(repository, times(1)).save(any(Vendor.class));
+
+        // Captura o argumento passado ao repository.save
+        verify(repository, times(1)).save(vendorCaptor.capture());
+        Vendor capturedVendor = vendorCaptor.getValue();
+
+        // Verifica se o objeto salvo tem os valores corretos
+        assertNull(capturedVendor.getId());
+        assertEquals("Vendor Name", capturedVendor.getName());
+        assertEquals("Address", capturedVendor.getAddress());
+        assertEquals("City", capturedVendor.getCity());
+        assertEquals("State", capturedVendor.getState());
+        assertEquals("Zip", capturedVendor.getZip());
+        assertEquals("Country", capturedVendor.getCountry());
     }
 
     @Test
