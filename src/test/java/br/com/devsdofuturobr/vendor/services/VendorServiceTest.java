@@ -3,17 +3,22 @@ package br.com.devsdofuturobr.vendor.services;
 import br.com.devsdofuturobr.vendor.builder.VendorBuilder;
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
-import br.com.devsdofuturobr.vendor.dto.response.VendorShortProjectionResponse;
+import br.com.devsdofuturobr.vendor.dto.response.VendorFullResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
 import br.com.devsdofuturobr.vendor.exception.VendorNotFoundException;
 import br.com.devsdofuturobr.vendor.repositories.VendorRepository;
 import br.com.devsdofuturobr.vendor.services.impl.VendorServiceImpl;
+import br.com.devsdofuturobr.vendor.util.VendorParse;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+
+@ExtendWith(MockitoExtension.class)
 public class VendorServiceTest {
 
     @Mock
@@ -35,16 +42,21 @@ public class VendorServiceTest {
     @InjectMocks
     private VendorServiceImpl vendorService;
 
+    private VendorBuilder vendorBuilder;
+
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        vendorService = new VendorServiceImpl(repository);
+        vendorBuilder = new VendorBuilder(new VendorParse());
+        vendorService = new VendorServiceImpl(repository, new VendorParse());
     }
 
     @Test
     void testCreate() {
-        VendorCreateRequest request = VendorBuilder.toRequestBuild();
-        Vendor vendorCreated = VendorBuilder.toBuild();
+        VendorCreateRequest request = vendorBuilder.toRequestBuild();
+        Vendor vendorCreated = vendorBuilder.toBuild();
         vendorCreated.setId(1L);
 
         ArgumentCaptor<Vendor> vendorCaptor = ArgumentCaptor.forClass(Vendor.class);
@@ -52,16 +64,16 @@ public class VendorServiceTest {
         when(repository.save(any(Vendor.class))).thenReturn(vendorCreated);
 
 
-        Vendor result = vendorService.create(request);
+        VendorFullResponse result = vendorService.create(request);
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Vendor Name", result.getName());
-        assertEquals("Address", result.getAddress());
-        assertEquals("City", result.getCity());
-        assertEquals("State", result.getState());
-        assertEquals("Zip", result.getZip());
-        assertEquals("Country", result.getCountry());
+        assertEquals(1L, result.id());
+        assertEquals("Vendor Name", result.name());
+        assertEquals("Address", result.address());
+        assertEquals("City", result.city());
+        assertEquals("State", result.state());
+        assertEquals("Zip", result.zip());
+        assertEquals("Country", result.country());
 
         //verify(repository, times(1)).save(any(Vendor.class));
 
@@ -81,19 +93,19 @@ public class VendorServiceTest {
 
     @Test
     void testFindById() {
-        Vendor vendor = VendorBuilder.toBuild();
+        Vendor vendor = vendorBuilder.toBuild();
         vendor.setId(1L);
         when(repository.findById(1L)).thenReturn(Optional.of(vendor));
 
-        Vendor result = vendorService.findById(1L);
+        VendorFullResponse result = vendorService.findById(1L);
 
         assertNotNull(result);
-        assertEquals("Vendor Name", result.getName());
-        assertEquals("Address", result.getAddress());
-        assertEquals("City", result.getCity());
-        assertEquals("State", result.getState());
-        assertEquals("Zip", result.getZip());
-        assertEquals("Country", result.getCountry());
+        assertEquals("Vendor Name", result.name());
+        assertEquals("Address", result.address());
+        assertEquals("City", result.city());
+        assertEquals("State", result.state());
+        assertEquals("Zip", result.zip());
+        assertEquals("Country", result.country());
 
         verify(repository, times(1)).findById(1L);
     }
@@ -108,23 +120,23 @@ public class VendorServiceTest {
 
     @Test
     void testUpdate() {
-        VendorUpdateRequest request = VendorBuilder.toUpdateRequestBuild();
-        Vendor vendor = VendorBuilder.toBuild();
+        VendorUpdateRequest request = vendorBuilder.toUpdateRequestBuild();
+        Vendor vendor = vendorBuilder.toBuild();
         vendor.setId(1L);
-        Vendor vendorUpdated = VendorBuilder.toUpdateBuild();
+        Vendor vendorUpdated = vendorBuilder.toUpdateBuild();
 
         when(repository.findById(request.id())).thenReturn(Optional.of(vendor));
         when(repository.save(any(Vendor.class))).thenReturn(vendorUpdated);
 
-        Vendor result = vendorService.update(request);
+        VendorFullResponse result = vendorService.update(request);
 
         assertNotNull(result);
-        assertEquals("Vendor name updated", result.getName());
-        assertEquals("Address updated", result.getAddress());
-        assertEquals("City updated", result.getCity());
-        assertEquals("State updated", result.getState());
-        assertEquals("Zip updated", result.getZip());
-        assertEquals("Country updated", result.getCountry());
+        assertEquals("Vendor name updated", result.name());
+        assertEquals("Address updated", result.address());
+        assertEquals("City updated", result.city());
+        assertEquals("State updated", result.state());
+        assertEquals("Zip updated", result.zip());
+        assertEquals("Country updated", result.country());
         verify(repository, times(1)).findById(request.id());
         verify(repository, times(1)).save(any(Vendor.class));
     }
@@ -153,12 +165,12 @@ public class VendorServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Vendor> vendors = new ArrayList<>();
         for(int i = 0; i < 15; i++){
-            vendors.add(VendorBuilder.toBuild());
+            vendors.add(vendorBuilder.toBuild());
         }
         Page<Vendor> page = new PageImpl<>(vendors, pageable, vendors.size());
         when(repository.findAll(pageable)).thenReturn(page);
 
-        Page<Vendor> result = vendorService.findAll(pageable);
+        Page<VendorFullResponse> result = vendorService.findAll(pageable);
 
         assertNotNull(result);
         assertEquals(10, result.getSize());
@@ -167,15 +179,4 @@ public class VendorServiceTest {
         verify(repository, times(1)).findAll(pageable);
     }
 
-    @Test
-    void testFindAllShortResponse() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<VendorShortProjectionResponse> page = new PageImpl<>(List.of());
-        when(repository.findAllShortResponse(pageable)).thenReturn(page);
-
-        Page<VendorShortProjectionResponse> result = vendorService.findAllShortResponse(pageable);
-
-        assertNotNull(result);
-        verify(repository, times(1)).findAllShortResponse(pageable);
-    }
 }

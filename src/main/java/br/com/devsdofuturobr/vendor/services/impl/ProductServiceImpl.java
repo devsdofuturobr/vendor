@@ -2,8 +2,10 @@ package br.com.devsdofuturobr.vendor.services.impl;
 
 import br.com.devsdofuturobr.vendor.dto.request.ProductCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.ProductUpdateRequest;
-import br.com.devsdofuturobr.vendor.dto.response.ProductProjectionResponse;
+import br.com.devsdofuturobr.vendor.dto.response.ProductFullResponse;
+import br.com.devsdofuturobr.vendor.dto.response.ProductResponse;
 import br.com.devsdofuturobr.vendor.entities.Product;
+import br.com.devsdofuturobr.vendor.entities.Vendor;
 import br.com.devsdofuturobr.vendor.exception.ProductNotFoundException;
 import br.com.devsdofuturobr.vendor.repositories.ProductRepository;
 import br.com.devsdofuturobr.vendor.services.ProductService;
@@ -20,10 +22,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
     private final VendorService vendorService;
+    private final ProductParse productParse;
 
     @Override
-    public Product create(ProductCreateRequest request) {
-        return repository.save(ProductParse.createByDTO(vendorService.findById(request.vendorId()), request));
+    public ProductResponse create(ProductCreateRequest request) {
+        Vendor vendor = vendorService.findByIdAndReturnEntity(request.vendorId());
+        Product toCreate = productParse.createByDTO(vendor).apply(request);
+        Product saved = repository.save(toCreate);
+        return productParse.toProductResponseDTO.apply(saved);
     }
 
     @Override
@@ -35,22 +41,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product update(ProductUpdateRequest request) {
-        return repository.save(ProductParse.updateByDTO(this.findById(request.id()), request));
+    public ProductResponse update(ProductUpdateRequest request) {
+        Product product = findByIdAndReturnEntity(request.id());
+        Product toUpdate = productParse.updateByDTO(product).apply(request);
+        Product updated = repository.save(toUpdate);
+        return productParse.toProductResponseDTO.apply(updated);
     }
 
     @Override
-    public Product findById(Long id) {
+    public ProductFullResponse findById(Long id) {
+        Product product = findByIdAndReturnEntity(id);
+        return productParse.toProductFullResponse.apply(product);
+    }
+
+    @Override
+    public Page<ProductFullResponse> findAll(Pageable pageable) {
+        Page<Product> products = repository.findAll(pageable);
+        return productParse.toPageFullResponse.apply(products);
+    }
+
+    private Product findByIdAndReturnEntity(Long id) {
         return repository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
-    }
-
-    @Override
-    public Page<Product> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    @Override
-    public Page<ProductProjectionResponse> findByVendorId(Long vendorId, Pageable pageable) {
-        return repository.findByVendorId(vendorId, pageable);
     }
 }

@@ -2,7 +2,7 @@ package br.com.devsdofuturobr.vendor.services;
 
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
-import br.com.devsdofuturobr.vendor.dto.response.VendorShortProjectionResponse;
+import br.com.devsdofuturobr.vendor.dto.response.VendorFullResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,15 +10,16 @@ import org.springframework.data.domain.Pageable;
 public interface VendorService {
 
 
-    Vendor create(VendorCreateRequest request);
+    VendorFullResponse create(VendorCreateRequest request);
 
-    Vendor update(VendorUpdateRequest request);
+    VendorFullResponse update(VendorUpdateRequest request);
 
-    Vendor findById(Long id);
+    VendorFullResponse findById(Long id);
 
     void delete(Long id);
 
-    Page<Vendor> findAll(Pageable pageable);
+    Page<VendorFullResponse> findAll(Pageable pageable);
 
-    Page<VendorShortProjectionResponse> findAllShortResponse(Pageable pageable);
+    Vendor findByIdAndReturnEntity(Long id);
+
 }

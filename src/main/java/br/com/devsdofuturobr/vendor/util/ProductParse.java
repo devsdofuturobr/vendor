@@ -6,49 +6,59 @@ import br.com.devsdofuturobr.vendor.dto.response.ProductFullResponse;
 import br.com.devsdofuturobr.vendor.dto.response.ProductResponse;
 import br.com.devsdofuturobr.vendor.entities.Product;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
-import java.util.Optional;
+import java.util.function.Function;
 
+@Component
 public class ProductParse {
 
-    public static ProductResponse toProductResponseDTO(Product product){
-        return new ProductResponse(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getDescription()
-        );
-    }
+    @Autowired
+    private VendorParse vendorParse;
 
-    public static Product createByDTO(Vendor vendor, ProductCreateRequest request){
-        return Product.builder()
-                .vendor(vendor)
-                .name(request.name())
-                .price(request.price())
-                .description(request.description())
-                .build();
-    }
+    public Function<Product, ProductResponse> toProductResponseDTO =
+            product -> new ProductResponse(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getDescription()
+            );
 
 
-    public static Product updateByDTO(Product product,ProductUpdateRequest request){
-        product.setName(Optional.ofNullable(request.name()).orElse(product.getName()));
-        product.setPrice(Optional.ofNullable(request.price()).orElse(product.getPrice()));
-        product.setDescription(Optional.ofNullable(request.description()).orElse(product.getDescription()));
-        return product;
+    public Function<ProductCreateRequest, Product> createByDTO(Vendor vendor) {
+        return request ->
+                Product.builder()
+                        .vendor(vendor)
+                        .name(request.name())
+                        .price(request.price())
+                        .description(request.description())
+                        .build();
     }
 
-    public static ProductFullResponse toProductFullResponse(Product product) {
-        return new ProductFullResponse(
-                product.getId(),
-                VendorParse.toShortDTO(product.getVendor()),
-                product.getName(),
-                product.getPrice(),
-                product.getDescription()
-        );
+
+    public Function<ProductUpdateRequest, Product> updateByDTO(Product toUpdate) {
+        return product -> {
+            toUpdate.setName(ObjectUtils.isEmpty(product.name()) ? toUpdate.getName() : product.name());
+            toUpdate.setPrice(ObjectUtils.isEmpty(product.price()) ? toUpdate.getPrice() : product.price());
+            toUpdate.setDescription(ObjectUtils.isEmpty(product.description()) ? toUpdate.getDescription() : product.description());
+
+            return toUpdate;
+        };
     }
 
-    public static Page<ProductFullResponse> toPageFullResponse(Page<Product> all) {
-        return all.map(ProductParse::toProductFullResponse);
-    }
+
+    public Function<Product, ProductFullResponse> toProductFullResponse =
+            product -> new ProductFullResponse(
+                    product.getId(),
+                    vendorParse.toShortDTO.apply(product.getVendor()),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getDescription()
+            );
+
+
+    public Function<Page<Product>, Page<ProductFullResponse>> toPageFullResponse = page -> page.map(toProductFullResponse);
 }

@@ -2,8 +2,7 @@ package br.com.devsdofuturobr.vendor.services.impl;
 
 import br.com.devsdofuturobr.vendor.dto.request.VendorCreateRequest;
 import br.com.devsdofuturobr.vendor.dto.request.VendorUpdateRequest;
-import br.com.devsdofuturobr.vendor.dto.response.VendorShortProjectionResponse;
-import br.com.devsdofuturobr.vendor.dto.response.VendorShortResponse;
+import br.com.devsdofuturobr.vendor.dto.response.VendorFullResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
 import br.com.devsdofuturobr.vendor.exception.VendorNotFoundException;
 import br.com.devsdofuturobr.vendor.repositories.VendorRepository;
@@ -19,22 +18,27 @@ import org.springframework.stereotype.Service;
 public class VendorServiceImpl implements VendorService {
 
     private final VendorRepository repository;
+    private final VendorParse vendorParse;
 
     @Override
-    public Vendor create(VendorCreateRequest request) {
-        return repository.save(VendorParse.createByDTO(request));
+    public VendorFullResponse create(VendorCreateRequest request) {
+        Vendor toCreate = vendorParse.createByDTO.apply(request);
+        Vendor saved = repository.save(toCreate);
+        return vendorParse.toDTO.apply(saved);
     }
 
     @Override
-    public Vendor update(VendorUpdateRequest request) {
-        Vendor vendor = this.findById(request.id());
-        Vendor toUpdate = VendorParse.updateByDTO(vendor, request);
-        return repository.save(toUpdate);
+    public VendorFullResponse update(VendorUpdateRequest request) {
+        Vendor vendor = findByIdAndReturnEntity(request.id());
+        Vendor toUpdate = vendorParse.updateByDTO(vendor).apply(request);
+        Vendor updated = repository.save(toUpdate);
+        return vendorParse.toDTO.apply(updated);
     }
 
     @Override
-    public Vendor findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new VendorNotFoundException(id));
+    public VendorFullResponse findById(Long id) {
+        Vendor vendor = findByIdAndReturnEntity(id);
+        return vendorParse.toDTO.apply(vendor);
     }
 
     @Override
@@ -46,12 +50,13 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public Page<Vendor> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<VendorFullResponse> findAll(Pageable pageable) {
+        Page<Vendor> all = repository.findAll(pageable);
+        return vendorParse.toPage.apply(all);
     }
 
     @Override
-    public Page<VendorShortProjectionResponse> findAllShortResponse(Pageable pageable) {
-        return repository.findAllShortResponse(pageable);
+    public Vendor findByIdAndReturnEntity(Long id) {
+        return repository.findById(id).orElseThrow(() -> new VendorNotFoundException(id));
     }
 }
