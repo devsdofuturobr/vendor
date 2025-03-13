@@ -1,0 +1,8 @@
+services:
+  vendor:
+    build:
+      context: ..
+    image: washington1995luiz/vendor:0.0.1
+    ports:
+      - "8085:80"
+
