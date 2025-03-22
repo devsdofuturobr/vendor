@@ -10,6 +10,8 @@ import br.com.devsdofuturobr.vendor.repositories.VendorRepository;
 import br.com.devsdofuturobr.vendor.services.VendorService;
 import br.com.devsdofuturobr.vendor.util.VendorParse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class VendorServiceImpl implements VendorService {
 
+    @Value("${rabbitmq.exchange.name}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
+
     private final VendorRepository repository;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public Vendor create(VendorCreateRequest request) {
-        return repository.save(VendorParse.createByDTO(request));
+        Vendor vendor = repository.save(VendorParse.createByDTO(request));
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, vendor);
+        return vendor;
     }
 
     @Override
