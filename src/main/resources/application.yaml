@@ -25,6 +25,16 @@ spring:
 server:
   port: ${SERVER_PORT:8085}
 
+jwt:
+  private:
+    key: ${JWT_PRIVATE_KEY:classpath:app.key}
+  public:
+    key: ${JWT_PUBLIC_KEY:classpath:app.pub}
+
+first-user-admin:
+  username: ${FIRST_USER_ADMIN_USERNAME:admin@email.com}
+  password: ${FIRST_USER_ADMIN_PASSWORD:12345}
+
 rabbitmq:
   queue:
     name: ${RABBITMQ_QUEUE_NAME:vendor-queue}
