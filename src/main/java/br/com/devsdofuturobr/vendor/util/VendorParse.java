@@ -7,7 +7,6 @@ import br.com.devsdofuturobr.vendor.dto.response.VendorShortResponse;
 import br.com.devsdofuturobr.vendor.entities.Vendor;
 import org.springframework.data.domain.Page;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public class VendorParse {

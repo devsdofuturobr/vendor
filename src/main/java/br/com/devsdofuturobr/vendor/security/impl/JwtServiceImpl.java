@@ -18,13 +18,11 @@ public class JwtServiceImpl implements JwtService {
     private final JwtEncoder encoder;
     private final JwtDecoder decoder;
 
-
     @Override
     public boolean isExpiredToken(String token) {
         Jwt jwt = isTokenValid(token);
         Instant expiresAt = Objects.requireNonNull(jwt.getExpiresAt());
         return Instant.now().isAfter(expiresAt);
-
     }
 
     @Override
@@ -38,11 +36,13 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String generateToken(Authentication authentication) {
+        System.out.println(authentication);
         Instant now = Instant.now();
         long expires = 3600L;
         String scopes = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
