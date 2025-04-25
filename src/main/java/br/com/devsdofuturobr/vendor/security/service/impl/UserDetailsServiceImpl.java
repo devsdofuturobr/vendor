@@ -1,4 +1,4 @@
-package br.com.devsdofuturobr.vendor.security;
+package br.com.devsdofuturobr.vendor.security.service.impl;
 
 import br.com.devsdofuturobr.vendor.security.exceptions.UserNotFoundException;
 import br.com.devsdofuturobr.vendor.security.repositories.UserRepository;

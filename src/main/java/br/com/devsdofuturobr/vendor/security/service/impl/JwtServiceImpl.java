@@ -1,6 +1,6 @@
-package br.com.devsdofuturobr.vendor.security.impl;
+package br.com.devsdofuturobr.vendor.security.service.impl;
 
-import br.com.devsdofuturobr.vendor.security.JwtService;
+import br.com.devsdofuturobr.vendor.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

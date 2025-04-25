@@ -1,6 +1,6 @@
-package br.com.devsdofuturobr.vendor.security.impl;
+package br.com.devsdofuturobr.vendor.security.service.impl;
 
-import br.com.devsdofuturobr.vendor.security.AuthenticationService;
+import br.com.devsdofuturobr.vendor.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

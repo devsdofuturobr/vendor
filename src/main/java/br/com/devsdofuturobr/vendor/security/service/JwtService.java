@@ -1,4 +1,4 @@
-package br.com.devsdofuturobr.vendor.security;
+package br.com.devsdofuturobr.vendor.security.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;

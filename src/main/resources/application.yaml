@@ -23,7 +23,7 @@ spring:
     enabled: ${FLYWAY_ENABLED:true}
 
 server:
-  port: ${SERVER_PORT:8085}
+  port: ${SERVER_PORT:9001}
 
 jwt:
   private:

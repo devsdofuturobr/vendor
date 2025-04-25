@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     @Value("${jwt.public.key}")
     private RSAPublicKey publicKey;
-    @Value("${jwt.private.key}")
+        @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
 
     @Bean
@@ -46,6 +46,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     auth.requestMatchers("/api/v1/vendor/auth/authenticate").permitAll();
                     auth.requestMatchers("/api/**").authenticated();
+                    auth.requestMatchers("/api/v1/vendor").authenticated();
                 })
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt ->
                         jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()).decoder(jwtDecoder())))

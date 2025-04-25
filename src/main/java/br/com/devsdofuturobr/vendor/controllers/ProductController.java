@@ -20,7 +20,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/vendor/product")
 public class ProductController {
 
     private final ProductService service;

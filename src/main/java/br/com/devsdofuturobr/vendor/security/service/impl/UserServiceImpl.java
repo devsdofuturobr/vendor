@@ -1,7 +1,7 @@
 package br.com.devsdofuturobr.vendor.security.service.impl;
 
-import br.com.devsdofuturobr.vendor.security.AuthenticationService;
-import br.com.devsdofuturobr.vendor.security.JwtService;
+import br.com.devsdofuturobr.vendor.security.service.AuthenticationService;
+import br.com.devsdofuturobr.vendor.security.service.JwtService;
 import br.com.devsdofuturobr.vendor.security.dto.request.CreateUserRequestDTO;
 import br.com.devsdofuturobr.vendor.security.dto.request.LoginRequestDTO;
 import br.com.devsdofuturobr.vendor.security.dto.response.LoginResponseDTO;
