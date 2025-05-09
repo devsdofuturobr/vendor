@@ -14,6 +14,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,13 +33,18 @@ public class VendorServiceTest {
     @Mock
     private VendorRepository repository;
 
+    @Mock
+    private RabbitTemplate rabbitTemplate;
+
     @InjectMocks
     private VendorServiceImpl vendorService;
+
+
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        vendorService = new VendorServiceImpl(repository);
+        vendorService = new VendorServiceImpl(repository, rabbitTemplate);
     }
 
     @Test

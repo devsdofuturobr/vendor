@@ -8,6 +8,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: bp1234
       MYSQL_DATABASE: vendor_db
+    networks:
+      - backend
+      - db
 
 volumes:
   dbbase:
+
+networks:
+  backend:
+    external: true
+  db:
+    external: true
